@@ -54,11 +54,11 @@ rechunkPaddedAlignedAt alignment = go
         go [] = []
 
 cmpeq8s :: Word8 -> DVS.Vector Word64 -> DVS.Vector Word64
-cmpeq8s w8 vv = if disalignment == 0
-  then DVS.constructN (DVS.length vv) go
-  else error $ "Unaligned byte string: " <> show disalignment
-  where vLen          = DVS.length vv
-        disalignment  = vLen - (vLen `div` 8)
+cmpeq8s w8 v = if disalignment == 0
+  then DVS.constructN (DVS.length v) go
+  else error $ "Unaligned byte string: " <> show disalignment <> ", vLen: " <> show vLen
+  where vLen          = DVS.length v
+        disalignment  = vLen - (vLen `div` 8) * 8
         w64           = fromIntegral w8 * 0x0101010101010101 :: Word64
         go :: DVS.Vector Word64 -> Word64
         go u = comp w
