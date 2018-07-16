@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 877f75af9eaaefeba5a62e756c412ca02633e2783d39f8c2ef5e73653cc87a21
+-- hash: 4b9635650d6313b294c4595bd58d8e420835f2af07eef2830c48d04048851d75
 
 name:           hw-simd
 version:        0.0.0.1
@@ -85,13 +85,13 @@ library
   exposed-modules:
       HaskellWorks.Data.Simd.Capabilities
       HaskellWorks.Data.Simd.Comparison
+      HaskellWorks.Data.Simd.Internal.Avx2.ByteString
+      HaskellWorks.Data.Simd.Internal.Avx2.Vector
       HaskellWorks.Data.Simd.Internal.Bits
       HaskellWorks.Data.Simd.Internal.Broadword
       HaskellWorks.Data.Simd.Internal.ByteString
       HaskellWorks.Data.Simd.Internal.ByteString.Lazy
       HaskellWorks.Data.Simd.Internal.Foreign
-      HaskellWorks.Data.Simd.Internal.Simd.Avx2.ByteString
-      HaskellWorks.Data.Simd.Internal.Simd.Avx2.Vector
   other-modules:
       Paths_hw_simd
   default-language: Haskell2010

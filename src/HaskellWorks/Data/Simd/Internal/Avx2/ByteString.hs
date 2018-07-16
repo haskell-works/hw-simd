@@ -1,6 +1,6 @@
 {-# LANGUAGE CPP #-}
 
-module HaskellWorks.Data.Simd.Internal.Simd.Avx2.ByteString where
+module HaskellWorks.Data.Simd.Internal.Avx2.ByteString where
 
 import Data.Semigroup (Semigroup ((<>)))
 import Data.Word

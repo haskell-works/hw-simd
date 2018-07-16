@@ -1,4 +1,4 @@
-module HaskellWorks.Data.Simd.Internal.Simd.Avx2.Vector where
+module HaskellWorks.Data.Simd.Internal.Avx2.Vector where
 
 import Data.Monoid ((<>))
 import Data.Word
