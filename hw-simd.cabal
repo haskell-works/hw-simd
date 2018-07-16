@@ -2,10 +2,10 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c8a1aebf4146f61204665a2ec7cf220174835399ce695b0f7ee2d0c8643d9ba0
+-- hash: d4e6b647bff1de25a793f93a5adb597bbbc16d00285948adf0c1aa4f8e3c542f
 
 name:           hw-simd
-version:        0.0.0.1
+version:        0.0.0.2
 synopsis:       SIMD library
 description:    Please see the README on Github at <https://github.com/haskell-works/hw-simd#readme>
 category:       Text, Web, CSV

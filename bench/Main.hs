@@ -4,6 +4,7 @@ import Control.Monad
 import Criterion.Main
 import Data.Char
 import Data.List
+import Data.Semigroup                       ((<>))
 import Data.Word
 import HaskellWorks.Data.Vector.AsVector64s
 
