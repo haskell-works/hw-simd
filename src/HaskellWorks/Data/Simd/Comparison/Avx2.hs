@@ -1,4 +1,6 @@
-module HaskellWorks.Data.Simd.Internal.Avx2.Vector where
+{-# LANGUAGE CPP #-}
+
+module HaskellWorks.Data.Simd.Comparison.Avx2 where
 
 import Data.Monoid ((<>))
 import Data.Word
@@ -28,3 +30,4 @@ cmpeq8s w8 v = case DVS.unsafeCast v :: DVS.Vector Word8 of
       else error $ "Unaligned byte string: " <> show disalignment
       where w64sLen       = srcLength `div` 64
             disalignment  = srcLength - w64sLen * 64
+
