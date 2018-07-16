@@ -16,4 +16,9 @@ case $1 in
     stack bench \
       --flag bits-extra:bmi2 --flag hw-rankselect-base:bmi2 --flag hw-rankselect:bmi2 --flag hw-simd:bmi2 --flag hw-simd:avx2
     ;;
+
+  repl)
+    stack repl \
+      --flag bits-extra:bmi2 --flag hw-rankselect-base:bmi2 --flag hw-rankselect:bmi2 --flag hw-simd:bmi2 --flag hw-simd:avx2
+    ;;
 esac

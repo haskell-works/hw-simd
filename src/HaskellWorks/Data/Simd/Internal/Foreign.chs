@@ -19,3 +19,4 @@ avx2Memcpy target source len = requireAvx2 $ do
 avx2Cmpeq8 :: UInt8 -> Ptr UInt64 -> Size -> Ptr UInt8 -> IO ()
 avx2Cmpeq8 byte target targetLength source = requireAvx2 $ do
   {#call unsafe avx2_cmpeq8 as c_cmpeq8#} byte target targetLength source
+{-# INLINE avx2Cmpeq8 #-}

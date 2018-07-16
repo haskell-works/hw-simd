@@ -13,3 +13,4 @@ cmpeq8s :: Word8 -> DVS.Vector Word64 -> DVS.Vector Word64
 cmpeq8s w bs = if
   | avx2Enabled -> AVX2.cmpeq8s w bs
   | True        -> STOCK.cmpeq8s w bs
+{-# INLINE cmpeq8s #-}

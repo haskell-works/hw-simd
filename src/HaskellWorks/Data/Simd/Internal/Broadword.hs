@@ -16,3 +16,4 @@ toggle64 carry w =
   let c = carry .&. 0x1
   in  let addend  = pdep (0x5555555555555555 .<. c) w
       in  ((addend .<. 1) .|. c) + comp w
+{-# INLINE toggle64 #-}

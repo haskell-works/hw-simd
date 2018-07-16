@@ -30,4 +30,4 @@ cmpeq8s w8 v = case DVS.unsafeCast v :: DVS.Vector Word8 of
       else error $ "Unaligned byte string: " <> show disalignment
       where w64sLen       = srcLength `div` 64
             disalignment  = srcLength - w64sLen * 64
-
+{-# INLINE cmpeq8s #-}

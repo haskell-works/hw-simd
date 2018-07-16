@@ -14,6 +14,7 @@ import qualified Data.Vector.Storable     as DVS
 toByteString :: DVS.Vector Word64 -> BS.ByteString
 toByteString v = case DVS.unsafeToForeignPtr (DVS.unsafeCast v) of
   (fptr, vOffset, vLength) -> BS.fromForeignPtr fptr vOffset vLength
+{-# INLINE toByteString #-}
 
 rechunkAlignedAt :: Int -> [BS.ByteString] -> [BS.ByteString]
 rechunkAlignedAt alignment = go
@@ -31,6 +32,7 @@ rechunkAlignedAt alignment = go
                     then bs:go bss
                     else BS.take bsCroppedLen bs:go (BS.drop bsCroppedLen bs:bss)
         go [] = []
+{-# INLINE rechunkAlignedAt #-}
 
 rechunkPaddedAlignedAt :: Int -> [BS.ByteString] -> [BS.ByteString]
 rechunkPaddedAlignedAt alignment = go
@@ -48,3 +50,4 @@ rechunkPaddedAlignedAt alignment = go
                     then bs:go bss
                     else BS.take bsCroppedLen bs:go (BS.drop bsCroppedLen bs:bss)
         go [] = []
+{-# INLINE rechunkPaddedAlignedAt #-}

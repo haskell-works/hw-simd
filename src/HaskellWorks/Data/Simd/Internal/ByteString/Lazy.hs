@@ -8,3 +8,4 @@ import qualified HaskellWorks.Data.Simd.Internal.ByteString as BS
 
 toByteString :: [DVS.Vector Word64] -> LBS.ByteString
 toByteString vs = LBS.fromChunks $ BS.toByteString <$> vs
+{-# INLINE toByteString #-}

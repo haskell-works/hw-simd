@@ -36,3 +36,4 @@ cmpeq8s w8 v = if disalignment == 0
                       (w2 .<. 16) .|.
                       (w1 .<.  8) .|.
                        w0
+{-# INLINE cmpeq8s #-}
