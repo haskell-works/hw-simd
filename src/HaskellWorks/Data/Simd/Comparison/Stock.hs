@@ -2,38 +2,54 @@ module HaskellWorks.Data.Simd.Comparison.Stock
   ( cmpeq8s
   ) where
 
-import Data.Monoid                          ((<>))
 import Data.Word
 import HaskellWorks.Data.AtIndex
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Simd.Internal.Bits
+import HaskellWorks.Data.Simd.Internal.Broadword
 
 import qualified Data.Vector.Storable as DVS
 
 cmpeq8s :: Word8 -> DVS.Vector Word64 -> DVS.Vector Word64
-cmpeq8s w8 v = if disalignment == 0
-  then DVS.constructN (DVS.length v) go
-  else error $ "Unaligned byte string: " <> show disalignment <> ", vLen: " <> show vLen
-  where vLen          = DVS.length v
-        disalignment  = vLen - (vLen `div` 8) * 8
-        w64           = fromIntegral w8 * 0x0101010101010101 :: Word64
+cmpeq8s w8 v = DVS.constructN ((DVS.length v + 7) `div` 8) go
+  where iw = fillWord64 w8
         go :: DVS.Vector Word64 -> Word64
-        go u = comp w
-          where ui = fromIntegral $ DVS.length u
-                w0 = testWord8s ((u !!! (ui + 0)) .^. w64)
-                w1 = testWord8s ((u !!! (ui + 1)) .^. w64)
-                w2 = testWord8s ((u !!! (ui + 2)) .^. w64)
-                w3 = testWord8s ((u !!! (ui + 3)) .^. w64)
-                w4 = testWord8s ((u !!! (ui + 4)) .^. w64)
-                w5 = testWord8s ((u !!! (ui + 5)) .^. w64)
-                w6 = testWord8s ((u !!! (ui + 6)) .^. w64)
-                w7 = testWord8s ((u !!! (ui + 7)) .^. w64)
-                w   = (w7 .<. 56) .|.
-                      (w6 .<. 48) .|.
-                      (w5 .<. 40) .|.
-                      (w4 .<. 32) .|.
-                      (w3 .<. 24) .|.
-                      (w2 .<. 16) .|.
-                      (w1 .<.  8) .|.
-                       w0
+        go u = let ui = end u in
+          if ui * 8 + 8 < end v
+            then  let vi  = ui * 8
+                      w0  = testWord8s ((v !!! (vi + 0)) .^. iw)
+                      w1  = testWord8s ((v !!! (vi + 1)) .^. iw)
+                      w2  = testWord8s ((v !!! (vi + 2)) .^. iw)
+                      w3  = testWord8s ((v !!! (vi + 3)) .^. iw)
+                      w4  = testWord8s ((v !!! (vi + 4)) .^. iw)
+                      w5  = testWord8s ((v !!! (vi + 5)) .^. iw)
+                      w6  = testWord8s ((v !!! (vi + 6)) .^. iw)
+                      w7  = testWord8s ((v !!! (vi + 7)) .^. iw)
+                      w   = (w7 .<. 56) .|.
+                            (w6 .<. 48) .|.
+                            (w5 .<. 40) .|.
+                            (w4 .<. 32) .|.
+                            (w3 .<. 24) .|.
+                            (w2 .<. 16) .|.
+                            (w1 .<.  8) .|.
+                              w0
+                  in comp w
+            else  let vi  = ui * 8
+                      w0  = testWord8s (atIndexOr 0 v (vi + 0) .^. iw)
+                      w1  = testWord8s (atIndexOr 0 v (vi + 1) .^. iw)
+                      w2  = testWord8s (atIndexOr 0 v (vi + 2) .^. iw)
+                      w3  = testWord8s (atIndexOr 0 v (vi + 3) .^. iw)
+                      w4  = testWord8s (atIndexOr 0 v (vi + 4) .^. iw)
+                      w5  = testWord8s (atIndexOr 0 v (vi + 5) .^. iw)
+                      w6  = testWord8s (atIndexOr 0 v (vi + 6) .^. iw)
+                      w7  = testWord8s (atIndexOr 0 v (vi + 7) .^. iw)
+                      w   = (w7 .<. 56) .|.
+                            (w6 .<. 48) .|.
+                            (w5 .<. 40) .|.
+                            (w4 .<. 32) .|.
+                            (w3 .<. 24) .|.
+                            (w2 .<. 16) .|.
+                            (w1 .<.  8) .|.
+                            w0
+                  in comp w
 {-# INLINE cmpeq8s #-}
