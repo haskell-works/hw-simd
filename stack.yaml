@@ -3,6 +3,9 @@ resolver: lts-12.0
 packages:
 - .
 
+- location: ../hw-hedgehog
+  extra-dep: true
+
 extra-deps:
 - hw-rankselect-0.12.0.3
 - lazy-csv-0.5.1

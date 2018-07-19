@@ -15,31 +15,31 @@ import qualified HaskellWorks.Data.Simd.Comparison.Avx2  as AVX2
 import qualified HaskellWorks.Data.Simd.Comparison.Stock as STOCK
 import qualified System.Directory                        as IO
 
-runCmpeq8Avx2 :: FilePath -> IO [DVS.Vector Word64]
-runCmpeq8Avx2 filePath = do
+runCmpEqWord8sAvx2 :: FilePath -> IO [DVS.Vector Word64]
+runCmpEqWord8sAvx2 filePath = do
   bs <- LBS.readFile filePath
   let vs = asVector64s 64 bs
   return $ if CAP.avx2Enabled
-    then AVX2.cmpeq8s (fromIntegral (ord '8')) <$> vs
+    then AVX2.cmpEqWord8s (fromIntegral (ord '8')) <$> vs
     else []
 
-runCmpeq8Stock :: FilePath -> IO [DVS.Vector Word64]
-runCmpeq8Stock filePath = do
+runCmpEqWord8sStock :: FilePath -> IO [DVS.Vector Word64]
+runCmpEqWord8sStock filePath = do
   bs <- LBS.readFile filePath
   let vs = asVector64s 64 bs
-  return $ STOCK.cmpeq8s (fromIntegral (ord '8')) <$> vs
+  return $ STOCK.cmpEqWord8s (fromIntegral (ord '8')) <$> vs
 
-benchCmpeq8 :: IO [Benchmark]
-benchCmpeq8 = do
+benchcmpEqWord8s :: IO [Benchmark]
+benchcmpEqWord8s = do
   entries <- IO.listDirectory "data/bench"
   let files = ("data/bench/" ++) <$> (".csv" `isSuffixOf`) `filter` entries
   benchmarks <- forM files $ \file -> return $ mempty
-    <> [bench ("hw-simd/cmpeq8/avx2/"  <> file) (nfIO (runCmpeq8Avx2  file))]
-    <> [bench ("hw-simd/cmpeq8/stock/" <> file) (nfIO (runCmpeq8Stock file))]
+    <> [bench ("hw-simd/cmpEqWord8s/avx2/"  <> file) (nfIO (runCmpEqWord8sAvx2  file))]
+    <> [bench ("hw-simd/cmpEqWord8s/stock/" <> file) (nfIO (runCmpEqWord8sStock file))]
   return (join benchmarks)
 
 main :: IO ()
 main = do
   benchmarks <- (mconcat <$>) $ sequence $ mempty
-    <> [benchCmpeq8]
+    <> [benchcmpEqWord8s]
   defaultMain benchmarks

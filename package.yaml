@@ -10,10 +10,11 @@ extra-source-files:
 - README.md
 - ChangeLog.md
 - cbits/simd.h
+- cbits/simd_debug.h
 
 # Metadata used when publishing your package
 synopsis:            SIMD library
-category:            Text, Web, CSV
+category:            Data, Bit, SIMD
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
@@ -38,7 +39,8 @@ library:
   build-tools:
   - c2hs
   c-sources:
-  - cbits/simd.c
+  - cbits/simd_avx2.c
+  - cbits/simd_sse2.c
   include-dirs:
   - cbits
 
@@ -52,10 +54,12 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - directory               >= 1.2.2      && < 1.4
+    - lens
     - hw-simd
     - hedgehog                >= 0.5        && < 0.7
     - hspec                   >= 2.4        && < 3
     - hw-hspec-hedgehog       >= 0.1.0.4    && < 0.2
+    - hw-hedgehog             >= 0.1.0.1    && < 0.2
     - text                    >= 1.2.2      && < 2.0
     verbatim:
       build-tool-depends: hspec-discover:hspec-discover
