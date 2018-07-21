@@ -6,6 +6,7 @@ module HaskellWorks.Data.Simd.ComparisonSpec (spec) where
 import Control.Lens
 import Control.Monad
 import Data.Word
+import HaskellWorks.Data.Simd.Capabilities
 import HaskellWorks.Hspec.Hedgehog
 import Hedgehog
 import Test.Hspec
@@ -23,13 +24,14 @@ import qualified Hedgehog.Range                          as R
 
 spec :: Spec
 spec = describe "HaskellWorks.Data.Simd.ComparisonSpec" $ do
-  describe "cmpEqWord8s" $ do
-    it "AVX2" $ requireProperty $ do
-      w <- forAll $ G.word8 R.constantBounded
-      vs :: [DVS.Vector Word64] <- forAll
-        $ G.list (R.linear 0 5)
-        $ (\g -> G.list (R.linear 0 4) g <&> join <&> DVS.fromList)
-        $ G.list (R.linear 8 8)
-        $ G.word8x8 (G.choice [pure w, G.word8 R.constantBounded])
-      AVX.cmpEqWord8s w vs === STK.cmpEqWord8s w vs
-      vs === vs
+  when avx2Enabled $ do
+    describe "cmpEqWord8s" $ do
+      it "AVX2" $ requireProperty $ do
+        w <- forAll $ G.word8 R.constantBounded
+        vs :: [DVS.Vector Word64] <- forAll
+          $ G.list (R.linear 0 5)
+          $ (\g -> G.list (R.linear 0 4) g <&> join <&> DVS.fromList)
+          $ G.list (R.linear 8 8)
+          $ G.word8x8 (G.choice [pure w, G.word8 R.constantBounded])
+        AVX.cmpEqWord8s w vs === STK.cmpEqWord8s w vs
+        vs === vs
