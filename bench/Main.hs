@@ -13,6 +13,8 @@ import qualified Data.Vector.Storable                    as DVS
 import qualified HaskellWorks.Data.Simd.Capabilities     as CAP
 import qualified HaskellWorks.Data.Simd.Comparison.Avx2  as AVX2
 import qualified HaskellWorks.Data.Simd.Comparison.Stock as STOCK
+import qualified HaskellWorks.Data.Simd.Logical.Avx2     as AVX2
+import qualified HaskellWorks.Data.Simd.Logical.Stock    as STOCK
 import qualified System.Directory                        as IO
 
 runCmpEqWord8sAvx2 :: FilePath -> IO [DVS.Vector Word64]
@@ -29,6 +31,18 @@ runCmpEqWord8sStock filePath = do
   let vs = asVector64s 64 bs
   return $ STOCK.cmpEqWord8s (fromIntegral (ord '8')) <$> vs
 
+runAndBitsAvx2 :: FilePath -> IO [DVS.Vector Word64]
+runAndBitsAvx2 filePath = do
+  bs <- LBS.readFile filePath
+  let vs = asVector64s 64 bs
+  return $ (\v -> AVX2.andBits v v) <$> vs
+
+runAndBitsStock :: FilePath -> IO [DVS.Vector Word64]
+runAndBitsStock filePath = do
+  bs <- LBS.readFile filePath
+  let vs = asVector64s 64 bs
+  return $ (\v -> STOCK.andBits v v) <$> vs
+
 benchcmpEqWord8s :: IO [Benchmark]
 benchcmpEqWord8s = do
   entries <- IO.listDirectory "data/bench"
@@ -38,8 +52,18 @@ benchcmpEqWord8s = do
     <> [bench ("hw-simd/cmpEqWord8s/stock/" <> file) (nfIO (runCmpEqWord8sStock file))]
   return (join benchmarks)
 
+benchAndBits :: IO [Benchmark]
+benchAndBits = do
+  entries <- IO.listDirectory "data/bench"
+  let files = ("data/bench/" ++) <$> (".csv" `isSuffixOf`) `filter` entries
+  benchmarks <- forM files $ \file -> return $ mempty
+    <> [bench ("hw-simd/andBits/avx2/"  <> file) (nfIO (runAndBitsAvx2  file))]
+    <> [bench ("hw-simd/andBits/stock/" <> file) (nfIO (runAndBitsStock file))]
+  return (join benchmarks)
+
 main :: IO ()
 main = do
   benchmarks <- (mconcat <$>) $ sequence $ mempty
     <> [benchcmpEqWord8s]
+    <> [benchAndBits]
   defaultMain benchmarks
