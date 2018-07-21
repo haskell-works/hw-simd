@@ -1,6 +1,9 @@
-{-# LANGUAGE MultiWayIf #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiWayIf        #-}
 
-module HaskellWorks.Data.Simd.Comparison where
+module HaskellWorks.Data.Simd.Comparison
+  ( CmpEqWord8s(..)
+  ) where
 
 import Data.Word
 import HaskellWorks.Data.Simd.Capabilities
@@ -9,8 +12,11 @@ import qualified Data.Vector.Storable                    as DVS
 import qualified HaskellWorks.Data.Simd.Comparison.Avx2  as AVX2
 import qualified HaskellWorks.Data.Simd.Comparison.Stock as STOCK
 
-cmpeq8s :: Word8 -> DVS.Vector Word64 -> DVS.Vector Word64
-cmpeq8s w bs = if
-  | avx2Enabled -> AVX2.cmpeq8s w bs
-  | True        -> STOCK.cmpeq8s w bs
-{-# INLINE cmpeq8s #-}
+class CmpEqWord8s a where
+  cmpEqWord8s :: Word8 -> a -> a
+
+instance CmpEqWord8s (DVS.Vector Word64) where
+  cmpEqWord8s w bs = if
+    | avx2Enabled -> AVX2.cmpEqWord8s w bs
+    | True        -> STOCK.cmpEqWord8s w bs
+  {-# INLINE cmpEqWord8s #-}

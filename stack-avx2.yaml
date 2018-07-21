@@ -1,0 +1,21 @@
+resolver: lts-12.0
+
+packages:
+- .
+
+extra-deps:
+- hw-hedgehog-0.1.0.2
+- hw-rankselect-0.12.0.3
+- lazy-csv-0.5.1
+- sv-0.1
+
+flags:
+  bits-extra:
+    bmi2: true
+  hw-rankselect-base:
+    bmi2: true
+  hw-rankselect:
+    bmi2: true
+  hw-simd:
+    bmi2: true
+    avx2: true

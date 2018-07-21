@@ -1,4 +1,5 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP               #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module HaskellWorks.Data.Simd.Comparison.Avx2 where
 
@@ -13,21 +14,28 @@ import qualified HaskellWorks.Data.Simd.Internal.Foreign as F
 
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 
-cmpeq8s :: Word8 -> DVS.Vector Word64 -> DVS.Vector Word64
-cmpeq8s w8 v = case DVS.unsafeCast v :: DVS.Vector Word8 of
-  u -> case DVS.unsafeToForeignPtr u of
-    (srcFptr, srcOffset, srcLength) -> if disalignment == 0
-      then F.unsafeLocalState $ do
-        targetFptr <- F.mallocForeignPtrBytes srcLength
-        F.withForeignPtr srcFptr $ \srcPtr -> do
-          F.withForeignPtr targetFptr $ \targetPtr -> do
-            _ <- F.avx2Cmpeq8
-              (fromIntegral w8)
-              (F.castPtr targetPtr `F.plusPtr` srcOffset)
-              (fromIntegral w64sLen)
-              (F.castPtr srcPtr)
-            return $ DVS.unsafeFromForeignPtr targetFptr 0 w64sLen
-      else error $ "Unaligned byte string: " <> show disalignment
-      where w64sLen       = srcLength `div` 64
-            disalignment  = srcLength - w64sLen * 64
-{-# INLINE cmpeq8s #-}
+class CmpEqWord8s a where
+  cmpEqWord8s :: Word8 -> a -> a
+
+instance CmpEqWord8s (DVS.Vector Word64) where
+  cmpEqWord8s w8 v = case DVS.unsafeCast v :: DVS.Vector Word8 of
+    u -> case DVS.unsafeToForeignPtr u of
+      (srcFptr, srcOffset, srcLength) -> if disalignment == 0
+        then F.unsafeLocalState $ do
+          targetFptr <- F.mallocForeignPtrBytes srcLength
+          F.withForeignPtr srcFptr $ \srcPtr -> do
+            F.withForeignPtr targetFptr $ \targetPtr -> do
+              _ <- F.avx2Cmpeq8
+                (fromIntegral w8)
+                (F.castPtr targetPtr)
+                (fromIntegral w64sLen)
+                (F.castPtr srcPtr `F.plusPtr` srcOffset)
+              return $ DVS.unsafeFromForeignPtr targetFptr 0 w64sLen
+        else error $ "Unaligned byte string: " <> show disalignment
+        where w64sLen       = srcLength `div` 64
+              disalignment  = srcLength - w64sLen * 64
+  {-# INLINE cmpEqWord8s #-}
+
+instance CmpEqWord8s [DVS.Vector Word64] where
+  cmpEqWord8s w8 vs = cmpEqWord8s w8 <$> vs
+  {-# INLINE cmpEqWord8s #-}

@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module HaskellWorks.Data.Simd.BroadwordSpec (spec) where
+module HaskellWorks.Data.Simd.Internal.BroadwordSpec (spec) where
 
 import Data.Maybe                                (fromJust)
 import Data.Word
@@ -17,7 +17,7 @@ import Test.Hspec
 {-# ANN module ("HLint: redundant bracket"          :: String) #-}
 
 spec :: Spec
-spec = describe "HaskellWorks.Data.Simd.BroadwordSpec" $ do
+spec = describe "HaskellWorks.Data.Simd.Internal.BroadwordSpec" $ do
   it "Case 0" $ requireProperty $ do
     let actual    = toggle64 0 $ fromJust $ bitRead "00100100 00000000 00000000 00000000 00000000 00000000 00000000 00000000" :: Word64
     let expected  =              fromJust $ bitRead "11000111 11111111 11111111 11111111 11111111 11111111 11111111 11111111" :: Word64
