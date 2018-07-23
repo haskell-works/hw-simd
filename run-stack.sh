@@ -23,4 +23,9 @@ case $1 in
     stack repl \
       $STACK_FLAGS
     ;;
+
+  install)
+    stack install \
+      $STACK_FLAGS
+    ;;
 esac

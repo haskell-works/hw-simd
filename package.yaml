@@ -39,8 +39,8 @@ library:
   build-tools:
   - c2hs
   c-sources:
-  - cbits/simd_avx2.c
-  - cbits/simd_sse2.c
+  - cbits/simd_avx2.cpp
+  - cbits/simd_sse2.cpp
   include-dirs:
   - cbits
 
