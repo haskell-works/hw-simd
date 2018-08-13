@@ -15,6 +15,9 @@ import qualified Data.Vector.Storable as DVS
 class CmpEqWord8s a where
   cmpEqWord8s :: Word8 -> a -> a
 
+instance CmpEqWord8s (DVS.Vector Word8) where
+  cmpEqWord8s w8 v = DVS.unsafeCast (cmpEqWord8s w8 (DVS.unsafeCast v :: DVS.Vector Word64))
+
 instance CmpEqWord8s (DVS.Vector Word64) where
   cmpEqWord8s w8 v = DVS.constructN ((DVS.length v + 7) `div` 8) go
     where iw = fillWord64 w8
@@ -62,3 +65,8 @@ instance CmpEqWord8s (DVS.Vector Word64) where
 instance CmpEqWord8s [DVS.Vector Word64] where
   cmpEqWord8s w8 vs = cmpEqWord8s w8 <$> vs
   {-# INLINE cmpEqWord8s #-}
+
+instance CmpEqWord8s [DVS.Vector Word8] where
+  cmpEqWord8s w8 vs = cmpEqWord8s w8 <$> vs
+  {-# INLINE cmpEqWord8s #-}
+

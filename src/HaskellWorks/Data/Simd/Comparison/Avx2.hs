@@ -17,6 +17,9 @@ import qualified HaskellWorks.Data.Simd.Internal.Foreign as F
 class CmpEqWord8s a where
   cmpEqWord8s :: Word8 -> a -> a
 
+instance CmpEqWord8s (DVS.Vector Word8) where
+  cmpEqWord8s w8 v = DVS.unsafeCast (cmpEqWord8s w8 (DVS.unsafeCast v :: DVS.Vector Word64))
+
 instance CmpEqWord8s (DVS.Vector Word64) where
   cmpEqWord8s w8 v = case DVS.unsafeCast v :: DVS.Vector Word8 of
     u -> case DVS.unsafeToForeignPtr u of
@@ -37,5 +40,9 @@ instance CmpEqWord8s (DVS.Vector Word64) where
   {-# INLINE cmpEqWord8s #-}
 
 instance CmpEqWord8s [DVS.Vector Word64] where
+  cmpEqWord8s w8 vs = cmpEqWord8s w8 <$> vs
+  {-# INLINE cmpEqWord8s #-}
+
+instance CmpEqWord8s [DVS.Vector Word8] where
   cmpEqWord8s w8 vs = cmpEqWord8s w8 <$> vs
   {-# INLINE cmpEqWord8s #-}

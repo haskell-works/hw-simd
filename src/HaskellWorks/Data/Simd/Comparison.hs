@@ -17,6 +17,24 @@ class CmpEqWord8s a where
 
 instance CmpEqWord8s (DVS.Vector Word64) where
   cmpEqWord8s w bs = if
-    | avx2Enabled -> AVX2.cmpEqWord8s w bs
+    | avx2Enabled -> AVX2.cmpEqWord8s  w bs
+    | True        -> STOCK.cmpEqWord8s w bs
+  {-# INLINE cmpEqWord8s #-}
+
+instance CmpEqWord8s (DVS.Vector Word8) where
+  cmpEqWord8s w bs = if
+    | avx2Enabled -> AVX2.cmpEqWord8s  w bs
+    | True        -> STOCK.cmpEqWord8s w bs
+  {-# INLINE cmpEqWord8s #-}
+
+instance CmpEqWord8s [DVS.Vector Word64] where
+  cmpEqWord8s w bs = if
+    | avx2Enabled -> AVX2.cmpEqWord8s  w bs
+    | True        -> STOCK.cmpEqWord8s w bs
+  {-# INLINE cmpEqWord8s #-}
+
+instance CmpEqWord8s [DVS.Vector Word8] where
+  cmpEqWord8s w bs = if
+    | avx2Enabled -> AVX2.cmpEqWord8s  w bs
     | True        -> STOCK.cmpEqWord8s w bs
   {-# INLINE cmpEqWord8s #-}
