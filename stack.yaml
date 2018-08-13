@@ -1,10 +1,11 @@
-resolver: lts-12.0
+resolver: lts-12.6
 
 packages:
 - .
 
 extra-deps:
 - hw-hedgehog-0.1.0.2
+- hw-prim-0.6.2.5
 - hw-rankselect-0.12.0.3
 - lazy-csv-0.5.1
 - sv-0.1
