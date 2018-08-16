@@ -10,7 +10,11 @@ import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Simd.Internal.Bits
 import HaskellWorks.Data.Simd.Internal.Broadword
 
-import qualified Data.Vector.Storable as DVS
+import qualified Data.ByteString                    as BS
+import qualified Data.Vector.Storable               as DVS
+import qualified HaskellWorks.Data.ByteString       as BS
+import qualified HaskellWorks.Data.Simd.ChunkString as CS
+import qualified HaskellWorks.Data.Vector.AsVector8 as V
 
 class CmpEqWord8s a where
   cmpEqWord8s :: Word8 -> a -> a
@@ -70,3 +74,10 @@ instance CmpEqWord8s [DVS.Vector Word8] where
   cmpEqWord8s w8 vs = cmpEqWord8s w8 <$> vs
   {-# INLINE cmpEqWord8s #-}
 
+instance CmpEqWord8s [BS.ByteString] where
+  cmpEqWord8s w8 vs = BS.toByteString . cmpEqWord8s w8 . V.asVector8 <$> vs
+  {-# INLINE cmpEqWord8s #-}
+
+instance CmpEqWord8s CS.ChunkString where
+  cmpEqWord8s w8 = CS.toChunkString . cmpEqWord8s w8 . BS.toByteStrings
+  {-# INLINE cmpEqWord8s #-}
