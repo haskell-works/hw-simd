@@ -11,13 +11,7 @@ void avx2_memcpy(
 
 void avx2_cmpeq8(
     uint8_t byte,
-    uint64_t *target,
-    size_t target_length,
-    uint8_t *source);
-
-void avx2_cmpeq8(
-    uint8_t byte,
-    uint64_t *target,
+    uint8_t *target,
     size_t target_length,
     uint8_t *source);
 
