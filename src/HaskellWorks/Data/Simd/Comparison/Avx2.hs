@@ -86,5 +86,3 @@ instance CmpEqWord8s CS.ChunkString where
   type Target CS.ChunkString = CS.ChunkString
   cmpEqWord8s w8 = CS.toChunkString . cmpEqWord8s w8 . BS.toByteStrings
   {-# INLINE cmpEqWord8s #-}
-
-
