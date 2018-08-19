@@ -8,11 +8,14 @@ import Control.Monad
 import Data.Monoid   ((<>))
 import Data.Word
 
+import qualified Data.ByteString                         as BS
 import qualified Data.Vector.Storable                    as DVS
 import qualified Foreign.ForeignPtr                      as F
 import qualified Foreign.Marshal.Unsafe                  as F
 import qualified Foreign.Ptr                             as F
+import qualified HaskellWorks.Data.ByteString            as BS
 import qualified HaskellWorks.Data.Simd.Internal.Foreign as F
+import qualified HaskellWorks.Data.Vector.AsVector8      as V
 import qualified HaskellWorks.Data.Vector.Storable       as DVS
 
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
@@ -72,3 +75,13 @@ instance CmpEqWord8s [DVS.Vector Word8] where
   type Target [DVS.Vector Word8] = [DVS.Vector Word8]
   cmpEqWord8s w8 vs = cmpEqWord8s w8 <$> vs
   {-# INLINE cmpEqWord8s #-}
+
+instance CmpEqWord8s [BS.ByteString] where
+  type Target [BS.ByteString] = [BS.ByteString]
+  cmpEqWord8s w8 vs = BS.toByteString . cmpEqWord8s w8 . V.asVector8 <$> vs
+  {-# INLINE cmpEqWord8s #-}
+
+-- instance CmpEqWord8s CS.ChunkString where
+--   type Target CS.ChunkString = CS.ChunkString
+--   cmpEqWord8s w8 = CS.toChunkString . cmpEqWord8s w8 . BS.toByteStrings
+--   {-# INLINE cmpEqWord8s #-}
