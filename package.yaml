@@ -1,5 +1,5 @@
 name:                hw-simd
-version:             0.1.0.3
+version:             0.1.1.0
 github:              "haskell-works/hw-simd"
 license:             BSD3
 author:              "John Ky"
