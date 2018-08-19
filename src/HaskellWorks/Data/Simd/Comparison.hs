@@ -9,6 +9,7 @@ import Data.Word
 import HaskellWorks.Data.Simd.Capabilities
 
 import qualified Data.Vector.Storable                    as DVS
+import qualified HaskellWorks.Data.Simd.ChunkString      as CS
 import qualified HaskellWorks.Data.Simd.Comparison.Avx2  as AVX2
 import qualified HaskellWorks.Data.Simd.Comparison.Stock as STOCK
 
@@ -34,6 +35,12 @@ instance CmpEqWord8s [DVS.Vector Word64] where
   {-# INLINE cmpEqWord8s #-}
 
 instance CmpEqWord8s [DVS.Vector Word8] where
+  cmpEqWord8s w bs = if
+    | avx2Enabled -> AVX2.cmpEqWord8s  w bs
+    | True        -> STOCK.cmpEqWord8s w bs
+  {-# INLINE cmpEqWord8s #-}
+
+instance CmpEqWord8s CS.ChunkString where
   cmpEqWord8s w bs = if
     | avx2Enabled -> AVX2.cmpEqWord8s  w bs
     | True        -> STOCK.cmpEqWord8s w bs
