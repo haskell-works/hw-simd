@@ -3,12 +3,15 @@
 
 module HaskellWorks.Data.Simd.Internal.ChunkString where
 
+import Data.String
 import Data.Word
 import HaskellWorks.Data.ByteString
 import HaskellWorks.Data.ByteString.Lazy
 
 import qualified Data.ByteString              as BS
 import qualified Data.ByteString.Lazy         as LBS
+import qualified Data.Text                    as T
+import qualified Data.Text.Encoding           as T
 import qualified Data.Vector.Storable         as DVS
 import qualified HaskellWorks.Data.ByteString as BS
 
@@ -18,42 +21,58 @@ newtype ChunkString = ChunkString
 
 instance ToLazyByteString ChunkString where
   toLazyByteString (ChunkString cs) = LBS.fromChunks cs
+  {-# INLINE toLazyByteString #-}
 
 instance ToByteStrings ChunkString where
   toByteStrings (ChunkString bss) = bss
+  {-# INLINE toByteStrings #-}
+
+instance IsString ChunkString where
+  fromString = toChunkString . LBS.fromStrict . T.encodeUtf8 . T.pack
+  {-# INLINE fromString #-}
 
 class ToChunkString a where
   toChunkString :: a -> ChunkString
 
 instance ToChunkString LBS.ByteString where
   toChunkString = toChunkString . LBS.toChunks
+  {-# INLINE toChunkString #-}
 
 instance ToChunkString [BS.ByteString] where
   toChunkString = ChunkString . BS.rechunk chunkSize
+  {-# INLINE toChunkString #-}
 
 instance ToChunkString [DVS.Vector Word8] where
   toChunkString = toChunkString . (toByteString <$>)
+  {-# INLINE toChunkString #-}
 
 instance ToChunkString [DVS.Vector Word16] where
   toChunkString = toChunkString . (toByteString <$>)
+  {-# INLINE toChunkString #-}
 
 instance ToChunkString [DVS.Vector Word32] where
   toChunkString = toChunkString . (toByteString <$>)
+  {-# INLINE toChunkString #-}
 
 instance ToChunkString [DVS.Vector Word64] where
   toChunkString = toChunkString . (toByteString <$>)
+  {-# INLINE toChunkString #-}
 
 instance ToChunkString (DVS.Vector Word8) where
   toChunkString v = toChunkString [toByteString v]
+  {-# INLINE toChunkString #-}
 
 instance ToChunkString (DVS.Vector Word16) where
   toChunkString v = toChunkString [toByteString v]
+  {-# INLINE toChunkString #-}
 
 instance ToChunkString (DVS.Vector Word32) where
   toChunkString v = toChunkString [toByteString v]
+  {-# INLINE toChunkString #-}
 
 instance ToChunkString (DVS.Vector Word64) where
   toChunkString v = toChunkString [toByteString v]
+  {-# INLINE toChunkString #-}
 
 #if 0
 instance BitWise ChunkString where
