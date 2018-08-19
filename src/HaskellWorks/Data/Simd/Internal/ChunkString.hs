@@ -4,8 +4,6 @@
 module HaskellWorks.Data.Simd.Internal.ChunkString where
 
 import Data.Word
-import HaskellWorks.Data.AtIndex
-import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.ByteString
 import HaskellWorks.Data.ByteString.Lazy
 
