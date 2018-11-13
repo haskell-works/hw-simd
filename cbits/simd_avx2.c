@@ -66,21 +66,16 @@ void avx2_cmpeq8_para(
   for (i = 0; i < targets_length * 2; ++i) {
     size_t j;
 
+    __m256i v_data_a = *(__m256i *)(source + (i * 32));
+
     for (j = 0; j < bytes_length; ++j) {
-      uint8_t *target = targets[j];
-
-      uint32_t *target32 = (uint32_t *)target;
-
-      uint8_t byte = bytes[j];
-
-      __m256i v_comparand = _mm256_set1_epi8(byte);
-
-      uint32_t *out_mask = (uint32_t*)target;
-
-      __m256i v_data_a = *(__m256i *)(source + (i * 32));
+      uint8_t *target     = targets[j];
+      uint32_t *target32  = (uint32_t *)target;
+      __m256i v_comparand = _mm256_set1_epi8(bytes[j]);
+      uint32_t *out_mask  = (uint32_t*)target;
       __m256i v_results_a = _mm256_cmpeq_epi8(v_data_a, v_comparand);
-      uint32_t mask = (uint32_t)_mm256_movemask_epi8(v_results_a);
-      target32[i] = mask;
+      uint32_t mask       = (uint32_t)_mm256_movemask_epi8(v_results_a);
+      target32[i]         = mask;
     }
   }
 #endif
