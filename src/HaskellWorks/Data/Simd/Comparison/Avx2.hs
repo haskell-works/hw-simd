@@ -1,6 +1,7 @@
-{-# LANGUAGE CPP               #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE TypeFamilies      #-}
+{-# LANGUAGE CPP                 #-}
+{-# LANGUAGE FlexibleInstances   #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeFamilies        #-}
 
 module HaskellWorks.Data.Simd.Comparison.Avx2 where
 
@@ -9,6 +10,7 @@ import Data.Monoid   ((<>))
 import Data.Word
 
 import qualified Data.ByteString                         as BS
+import qualified Data.Vector                             as DV
 import qualified Data.Vector.Storable                    as DVS
 import qualified Foreign.ForeignPtr                      as F
 import qualified Foreign.Marshal.Unsafe                  as F
@@ -87,4 +89,32 @@ instance CmpEqWord8s CS.ChunkString where
   cmpEqWord8s w8 = CS.toChunkString . cmpEqWord8s w8 . BS.toByteStrings
   {-# INLINE cmpEqWord8s #-}
 
+class CmpEqWord8sPara a where
+  type CmpEqWord8sParaTarget a
+  cmpEqWord8sPara :: DVS.Vector Word8 -> a -> CmpEqWord8sParaTarget a
+
+instance CmpEqWord8sPara (DVS.Vector Word64) where
+  type CmpEqWord8sParaTarget (DVS.Vector Word64) = DV.Vector (DVS.Vector Word64)
+  cmpEqWord8sPara w8s v = case DVS.unsafeCast v :: DVS.Vector Word8 of
+    u -> case DVS.unsafeToForeignPtr u of
+      (srcFptr, srcOffset, srcLength) -> if disalignment == 0
+        then F.unsafeLocalState $ do
+          tgtFptr <- F.mallocForeignPtrBytes (srcLength * DVS.length w8s)
+          F.withForeignPtr srcFptr $ \srcPtr -> do
+            F.withForeignPtr tgtFptr $ \tgtPtr -> do
+              let tgtsPtrsV :: DVS.Vector (F.Ptr Word8) = DVS.constructN (DVS.length w8s) $ \t ->
+                    tgtPtr `F.plusPtr` (DVS.length t * DVS.length v)
+              let (w8sFptr, _, w8sLen) = DVS.unsafeToForeignPtr w8s
+              let (tgtsPtrsFptr, _, _) = DVS.unsafeToForeignPtr tgtsPtrsV
+              F.withForeignPtr w8sFptr $ \w8sPtr -> do
+                F.withForeignPtr tgtsPtrsFptr $ \tgtsPtrsPtr -> do
+                  F.avx2Cmpeq8Para (F.castPtr w8sPtr) (fromIntegral w8sLen) (F.castPtr tgtsPtrsPtr) (fromIntegral w64sLen) (srcPtr `F.plusPtr` srcOffset)
+
+              let tgtV = DVS.unsafeFromForeignPtr tgtFptr 0 (w64sLen * DVS.length w8s)
+              return $ DV.constructN (DVS.length w8s) $ \t -> DVS.take w64sLen (DVS.drop (DV.length t * w64sLen) tgtV)
+
+        else error $ "Unaligned byte string: " <> show disalignment
+        where w64sLen       = srcLength `div` 64
+              disalignment  = srcLength - w64sLen * 64
+  {-# INLINE cmpEqWord8sPara #-}
 

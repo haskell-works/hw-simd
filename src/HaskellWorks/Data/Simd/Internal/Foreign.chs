@@ -21,6 +21,11 @@ avx2Cmpeq8 byte target targetLength source = requireAvx2 $ do
   {#call unsafe avx2_cmpeq8 as c_cmpeq8#} byte target targetLength source
 {-# INLINE avx2Cmpeq8 #-}
 
+avx2Cmpeq8Para :: Ptr UInt8 -> Size -> Ptr (Ptr UInt8) -> Size -> Ptr UInt8 -> IO ()
+avx2Cmpeq8Para bytes bytes_length target targetLength source = requireAvx2 $ do
+  {#call unsafe avx2_cmpeq8_para as c_cmpeq8_para#} bytes bytes_length target targetLength source
+{-# INLINE avx2Cmpeq8Para #-}
+
 avx2AndBits :: Ptr UInt8 -> Size -> Ptr UInt8 -> Ptr UInt8 -> IO ()
 avx2AndBits target targetLength source_a source_b = requireAvx2 $ do
   {#call unsafe avx2_and_bits as c_avx2_and_bits#} target targetLength source_a source_b

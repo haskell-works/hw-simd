@@ -15,6 +15,13 @@ void avx2_cmpeq8(
     size_t target_length,
     uint8_t *source);
 
+void avx2_cmpeq8_para(
+    uint8_t *bytes,
+    size_t bytes_length,
+    uint8_t **targets,
+    size_t targets_length,
+    uint8_t *source);
+
 void avx2_and_bits(
     uint8_t *target,
     size_t target_length,
