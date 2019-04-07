@@ -28,3 +28,4 @@ cabal.sandbox.config
 /snapshot.yaml
 /stack-ci.yaml
 /.ghc.environment.*
+/cabal.project.local
