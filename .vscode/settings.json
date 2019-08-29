@@ -4,6 +4,7 @@
     "cstddef": "c",
     "__functional_03": "c",
     "functional": "c",
-    "__locale": "c"
+    "__locale": "c",
+    "stdlib.h": "c"
   }
 }
