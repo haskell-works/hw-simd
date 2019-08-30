@@ -117,8 +117,7 @@ library
     build-depends:
         semigroups >=0.8.4 && <0.19
       , transformers >=0.4 && <0.6
-  build-tools:
-      c2hs
+  build-tool-depends:   c2hs:c2hs
 
 test-suite hw-simd-test
   import:   base, common
