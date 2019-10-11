@@ -1,6 +1,6 @@
 cabal-version:  2.2
 name:           hw-simd
-version:        0.1.1.4
+version:        0.1.1.5
 synopsis:       SIMD library
 description:    Please see the README on Github at <https://github.com/haskell-works/hw-simd#readme>
 category:       Data, Bit, SIMD
