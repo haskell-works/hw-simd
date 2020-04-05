@@ -6,7 +6,6 @@
 module HaskellWorks.Data.Simd.Comparison.Avx2 where
 
 import Control.Monad
-import Data.Monoid   ((<>))
 import Data.Word
 
 import qualified Data.ByteString                         as BS

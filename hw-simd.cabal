@@ -60,10 +60,8 @@ common hw-rankselect-base         { build-depends: hw-rankselect-base         >=
 common lens                       { build-depends: lens                       >= 4          && < 5      }
 common mmap                       { build-depends: mmap                       >= 0.5.9      && < 0.6    }
 common text                       { build-depends: text                       >= 1.2.2      && < 2.0    }
+common transformers               { build-depends: transformers               >= 0.4        && < 0.6    }
 common vector                     { build-depends: vector                     >= 0.12.0.1   && < 0.13   }
-
-common semigroups   { if (!impl(ghc >= 8.0.1)) { build-depends: semigroups   >=  0.8.4   && < 0.19 } }
-common transformers { if (!impl(ghc >= 8.0.1)) { build-depends: transformers >=  0.4     && < 0.6  } }
 
 common config
   default-language:     Haskell2010
@@ -95,7 +93,6 @@ library
                       , hw-prim
                       , hw-rankselect
                       , hw-rankselect-base
-                      , semigroups
                       , transformers
                       , vector
   exposed-modules:      HaskellWorks.Data.Simd.Capabilities
@@ -160,7 +157,6 @@ benchmark bench
                       , hw-rankselect
                       , hw-rankselect-base
                       , mmap
-                      , semigroups
                       , transformers
                       , vector
   type:                 exitcode-stdio-1.0

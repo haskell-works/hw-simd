@@ -2,7 +2,6 @@
 
 module HaskellWorks.Data.Simd.Internal.Marshal where
 
-import Data.Monoid ((<>))
 import Data.Word
 
 import qualified Data.Vector.Storable as DVS
