@@ -170,7 +170,7 @@ test-suite doctest
                       , doctest-discover
                       , hw-simd
   type:                 exitcode-stdio-1.0
-  ghc-options:          -threaded
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
   main-is:              DoctestDriver.hs
   HS-Source-Dirs:       doctest
   build-tool-depends:   doctest-discover:doctest-discover
