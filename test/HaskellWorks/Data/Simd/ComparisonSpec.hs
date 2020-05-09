@@ -19,9 +19,9 @@ import qualified HaskellWorks.Hedgehog.Gen               as G
 import qualified Hedgehog.Gen                            as G
 import qualified Hedgehog.Range                          as R
 
-{-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
-{-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
-{-# ANN module ("HLint: ignore Redundant bracket"   :: String) #-}
+{- HLINT ignore "Redundant do"        -}
+{- HLINT ignore "Redundant bracket"   -}
+{- HLINT ignore "Reduce duplication"  -}
 
 spec :: Spec
 spec = describe "HaskellWorks.Data.Simd.ComparisonSpec" $ do

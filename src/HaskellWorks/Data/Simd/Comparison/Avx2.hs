@@ -20,7 +20,7 @@ import qualified HaskellWorks.Data.Simd.Internal.Foreign as F
 import qualified HaskellWorks.Data.Vector.AsVector8      as V
 import qualified HaskellWorks.Data.Vector.Storable       as DVS
 
-{-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
+{- HLINT ignore "Redundant do"        -}
 
 class CmpEqWord8s a where
   type Target a

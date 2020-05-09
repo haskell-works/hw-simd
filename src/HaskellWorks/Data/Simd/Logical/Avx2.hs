@@ -11,8 +11,8 @@ import qualified Foreign.Marshal.Unsafe                  as F
 import qualified Foreign.Ptr                             as F
 import qualified HaskellWorks.Data.Simd.Internal.Foreign as F
 
-{-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
-{-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
+{- HLINT ignore "Redundant do"        -}
+{- HLINT ignore "Reduce duplication"  -}
 
 class XorBits a where
   xorBits :: a -> a -> a
