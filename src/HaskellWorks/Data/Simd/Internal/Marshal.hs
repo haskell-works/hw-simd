@@ -7,7 +7,7 @@ import Data.Word
 import qualified Data.Vector.Storable as DVS
 import qualified Foreign.ForeignPtr   as F
 
-{-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
+{- HLINT ignore "Redundant do"        -}
 
 unsafeToElemSizedForeignPtr :: Int -> DVS.Vector Word64 -> (F.ForeignPtr Word8, Int, Int)
 unsafeToElemSizedForeignPtr elemSize v = case DVS.unsafeCast v :: DVS.Vector Word8 of
