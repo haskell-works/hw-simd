@@ -3,11 +3,11 @@ module Main where
 import Control.Monad
 import Criterion.Main
 import Data.Char
-import Data.List
 import Data.Word
 import HaskellWorks.Data.Vector.AsVector64s
 
 import qualified Data.ByteString.Lazy                    as LBS
+import qualified Data.List                               as L
 import qualified Data.Vector.Storable                    as DVS
 import qualified HaskellWorks.Data.Simd.Capabilities     as CAP
 import qualified HaskellWorks.Data.Simd.Comparison.Avx2  as AVX2
@@ -41,7 +41,7 @@ runAndBitsStock bs = do
 benchcmpEqWord8s :: IO [Benchmark]
 benchcmpEqWord8s = do
   entries <- IO.listDirectory "data/bench"
-  let files = ("data/bench/" ++) <$> (".csv" `isSuffixOf`) `filter` entries
+  let files = ("data/bench/" ++) <$> (".csv" `L.isSuffixOf`) `filter` entries
   benchmarks <- forM files $ \file -> return $
     [ env (LBS.readFile file) $ \bs -> bgroup file
       [ bench ("hw-simd/cmpEqWord8s/avx2/"  <> file) (nfIO (runCmpEqWord8sAvx2  bs))
@@ -53,7 +53,7 @@ benchcmpEqWord8s = do
 benchAndBits :: IO [Benchmark]
 benchAndBits = do
   entries <- IO.listDirectory "data/bench"
-  let files = ("data/bench/" ++) <$> (".csv" `isSuffixOf`) `filter` entries
+  let files = ("data/bench/" ++) <$> (".csv" `L.isSuffixOf`) `filter` entries
   benchmarks <- forM files $ \file -> return $
     [ env (LBS.readFile file) $ \bs -> bgroup file
       [ bench ("hw-simd/andBits/avx2/"  <> file) (nfIO (runAndBitsAvx2  bs))
