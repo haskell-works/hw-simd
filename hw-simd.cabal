@@ -80,6 +80,8 @@ common config
   if flag(sse42)
     ghc-options:        -msse4.2
     cc-options:         -msse4.2
+  if (arch(aarch64) || arch(arm))
+    build-depends:      base < 0
 
 common hw-simd
   build-depends:        hw-simd
