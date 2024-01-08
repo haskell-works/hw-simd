@@ -17,17 +17,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ghc: ["9.2.2", "9.0.2", "8.10.7", "8.8.4", "8.6.5"]
-        os: [ubuntu-latest, windows-latest]
+        ghc: ["9.8.1", "9.6.3", "9.4.8", "9.2.8", "9.0.2", "8.10.7"]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        exclude:
+        - os: windows-latest
+          ghc: "9.4.2"
+
+    env:
+      # Modify this value to "invalidate" the cabal cache.
+      CABAL_CACHE_VERSION: "2024-01-05"
 
     steps:
       - uses: actions/checkout@v2
 
-      - uses: haskell/actions/setup@v1
+      - uses: haskell-actions/setup@v2
         id: setup-haskell
         with:
           ghc-version: ${{ matrix.ghc }}
-          cabal-version: 3.6.2.0
+          cabal-version: '3.10.2.1'
 
       - name: Set some window specific things
         if: matrix.os == 'windows-latest'
@@ -36,9 +43,11 @@ jobs:
       - name: Configure project
         run: |
           cabal configure --enable-tests --enable-benchmarks --write-ghc-environment-files=ghc8.4.4+
-          # APPEND=1 ./scripts/gen-cabal-project-local.sh
-          # echo "cabal.project.local:"
-          # cat cabal.project.local
+          cat >> cabal.project.local <<EOF
+          package bits-extra
+            flags: +bmi2
+          EOF
+          cabal build all --enable-tests --enable-benchmarks --dry-run
 
       - name: Cabal cache over S3
         uses: action-works/cabal-cache-s3@v1
@@ -50,7 +59,7 @@ jobs:
           dist-dir: dist-newstyle
           store-path: ${{ steps.setup-haskell.outputs.cabal-store }}
           threads: 16
-          archive-uri: ${{ secrets.BINARY_CACHE_URI }}
+          archive-uri: ${{ secrets.BINARY_CACHE_URI }}/${{ env.CABAL_CACHE_VERSION }}/${{ runner.os }}/${{ matrix.cabal }}/${{ matrix.ghc }}
           skip: "${{ secrets.BINARY_CACHE_URI == '' }}"
 
       - name: Cabal cache over HTTPS
@@ -59,7 +68,7 @@ jobs:
           dist-dir: dist-newstyle
           store-path: ${{ steps.setup-haskell.outputs.cabal-store }}
           threads: 16
-          archive-uri: https://cache.haskellworks.io/archive
+          archive-uri: https://cache.haskellworks.io/${{ env.CABAL_CACHE_VERSION }}/${{ runner.os }}/${{ matrix.cabal }}/${{ matrix.ghc }}
           skip: "${{ secrets.BINARY_CACHE_URI != '' }}"
 
       - name: Build
